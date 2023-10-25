@@ -17,6 +17,8 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
+  String _printerStatus = 'Unknown';
+
   final _printerSdkPlugin = PrinterSdk();
 
   @override
@@ -31,8 +33,8 @@ class _MyAppState extends State<MyApp> {
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
     try {
-      platformVersion =
-          await _printerSdkPlugin.getPlatformVersion() ?? 'Unknown platform version';
+      platformVersion = await _printerSdkPlugin.getPlatformVersion() ??
+          'Unknown platform version';
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
@@ -54,9 +56,19 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
+        body: Column(children: [
+          Text('Running on: $_platformVersion\n'),
+          Text('Printer Status: $_printerStatus\n'),
+          ElevatedButton(
+            onPressed: () async {
+              var usbDriverState = await _printerSdkPlugin.checkUsbDriver();
+              setState(() {
+                _printerStatus = usbDriverState ? 'Connected' : 'Disconnected';
+              });
+            },
+            child: const Text('Print Text'),
+          ),
+        ]),
       ),
     );
   }

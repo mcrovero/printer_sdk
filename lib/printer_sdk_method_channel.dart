@@ -11,7 +11,14 @@ class MethodChannelPrinterSdk extends PrinterSdkPlatform {
 
   @override
   Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
+    final version =
+        await methodChannel.invokeMethod<String>('getPlatformVersion');
     return version;
+  }
+
+  @override
+  Future<bool> checkUsbDriver() async {
+    final result = await methodChannel.invokeMethod<bool>('checkUsbDriver');
+    return result ?? false;
   }
 }

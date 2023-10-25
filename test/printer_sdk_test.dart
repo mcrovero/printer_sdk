@@ -7,9 +7,11 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 class MockPrinterSdkPlatform
     with MockPlatformInterfaceMixin
     implements PrinterSdkPlatform {
-
   @override
   Future<String?> getPlatformVersion() => Future.value('42');
+
+  @override
+  Future<bool> checkUsbDriver() => Future.value(true);
 }
 
 void main() {
