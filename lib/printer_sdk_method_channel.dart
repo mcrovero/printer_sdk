@@ -21,4 +21,16 @@ class MethodChannelPrinterSdk extends PrinterSdkPlatform {
     final result = await methodChannel.invokeMethod<bool>('checkUsbDriver');
     return result ?? false;
   }
+
+  @override
+  Future<String?> checkDevices() async {
+    final result = await methodChannel.invokeMethod<String>('checkDevices');
+    return result;
+  }
+
+  @override
+  Future<bool> printSelfCheck() async {
+    final result = await methodChannel.invokeMethod<bool>('printSelfCheck');
+    return result ?? false;
+  }
 }

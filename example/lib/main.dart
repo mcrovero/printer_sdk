@@ -18,6 +18,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
   String _printerStatus = 'Unknown';
+  String _devicesStatus = 'Unknown';
 
   final _printerSdkPlugin = PrinterSdk();
 
@@ -66,8 +67,27 @@ class _MyAppState extends State<MyApp> {
                 _printerStatus = usbDriverState ? 'Connected' : 'Disconnected';
               });
             },
-            child: const Text('Print Text'),
+            child: const Text('Check USB Driver'),
           ),
+          Text('Devices Status: $_devicesStatus\n'),
+          ElevatedButton(
+            onPressed: () async {
+              var devicesState = await _printerSdkPlugin.checkDevices();
+              setState(() {
+                _devicesStatus = devicesState ?? 'Unknown';
+              });
+            },
+            child: const Text('Check devices'),
+          ),
+          ElevatedButton(
+              onPressed: () async {
+                var printSelfCheckState =
+                    await _printerSdkPlugin.printSelfCheck();
+                setState(() {
+                  _printerStatus = printSelfCheckState ? 'Success' : 'Failed';
+                });
+              },
+              child: const Text('Print Self Check'))
         ]),
       ),
     );

@@ -30,4 +30,12 @@ abstract class PrinterSdkPlatform extends PlatformInterface {
   Future<bool> checkUsbDriver() {
     throw UnimplementedError('checkUsbDriver() has not been implemented.');
   }
+
+  Future<String?> checkDevices() {
+    throw UnimplementedError('checkDevices() has not been implemented.');
+  }
+
+  Future<bool> printSelfCheck() {
+    throw UnimplementedError('printSelfCheck() has not been implemented.');
+  }
 }

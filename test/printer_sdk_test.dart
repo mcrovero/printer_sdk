@@ -11,7 +11,22 @@ class MockPrinterSdkPlatform
   Future<String?> getPlatformVersion() => Future.value('42');
 
   @override
-  Future<bool> checkUsbDriver() => Future.value(true);
+  Future<bool> checkUsbDriver() {
+    // TODO: implement checkUsbDriver
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<String?> checkDevices() {
+    // TODO: implement checkDevices
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> printSelfCheck() {
+    // TODO: implement printSelfCheck
+    throw UnimplementedError();
+  }
 }
 
 void main() {

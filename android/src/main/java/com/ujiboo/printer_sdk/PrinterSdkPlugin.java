@@ -20,8 +20,10 @@ import android.hardware.usb.UsbManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.msprintsdk.PrintCmd;
 import com.msprintsdk.UsbDriver;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -64,6 +66,23 @@ public class PrinterSdkPlugin implements FlutterPlugin, MethodCallHandler {
       result.success("Android " + android.os.Build.VERSION.RELEASE);
     } else if (call.method.equals("checkUsbDriver")) {
       result.success(usbDriverCheck() == 0);
+    } else if (call.method.equals("checkDevices")) {
+      try {
+        result.success(checkDevices());
+      } catch (IOException e) {
+        result.error("IOException", e.getMessage(), e);
+      }
+    } else if (call.method.equals("printSelfCheck")) {
+      try {
+        if(usbDriverCheck() != 0) {
+          result.error("IOException", "usbDriverCheck failed", null);
+          return;
+        }
+        mUsbDriver.write(PrintCmd.PrintSelfcheck());
+        result.success(true);
+      } catch (Exception e) {
+        result.error("IOException", e.getMessage(), e);
+      }
     } else {
       result.notImplemented();
     }
@@ -112,6 +131,30 @@ public class PrinterSdkPlugin implements FlutterPlugin, MethodCallHandler {
     }
 
     return iResult;
+  }
+
+  String checkDevices() throws IOException {
+    String strValue = "";
+    int iIndex = 0;
+    UsbManager manager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
+    HashMap<String, UsbDevice> deviceList = manager.getDeviceList();
+    Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();
+    while (deviceIterator.hasNext()) {
+      UsbDevice device = deviceIterator.next();
+      iIndex++;
+      strValue = strValue + String.valueOf(iIndex) + " DeviceClass:" + device.getDeviceClass() + "; DeviceId:"
+          + device.getDeviceId() + "; DeviceName:" + device.getDeviceName() + "; VendorId:" + device.getVendorId() +
+          "; \r\nProductId:" + device.getProductId() + "; InterfaceCount:" + device.getInterfaceCount()
+          + "; describeContents:" + device.describeContents() + ";\r\n" +
+          "DeviceProtocol:" + device.getDeviceProtocol() + ";DeviceSubclass:" + device.getDeviceSubclass() + ";\r\n";
+      strValue = strValue + "****************\r\n";
+
+    }
+    if (strValue.equals("")) {
+      strValue = "No USB device.";
+    }
+
+    return strValue;
   }
 
   BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
